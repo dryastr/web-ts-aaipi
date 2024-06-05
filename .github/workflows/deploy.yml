@@ -1,0 +1,68 @@
+name: Node.js CI
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  deploy:
+
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [20.x]
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
+    - name: Use Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v1
+      with:
+        node-version: ${{ matrix.node-version }}
+    - name: Install dependencies
+      run: npm install
+    - name: Build
+      run: CI= npm run build
+    
+    - name: Backup
+      uses: appleboy/ssh-action@master
+      with:
+        host: ${{ secrets.HOST }}
+        USERNAME: ${{ secrets.USERNAME }}
+        PORT: ${{ secrets.PORT }}
+        KEY: ${{ secrets.SSHKEY }}
+        script: |
+         export NVM_DIR=~/.nvm
+         source ~/.nvm/nvm.sh
+         rm -rf /var/www/backup.ts.aaipi.id
+         mkdir /var/www/backup.ts.aaipi.id
+         mv /var/www/ts.aaipi.id/.next/* /var/www/backup.ts.aaipi.id
+         cd /var/www/ts.aaipi.id/
+         git pull
+         npm install
+      
+    - name: Deploy
+      uses: appleboy/scp-action@master
+      with:
+        host: ${{ secrets.HOST }}
+        username: ${{ secrets.USERNAME }}
+        port: ${{ secrets.PORT }}
+        key: ${{ secrets.SSHKEY }}
+        source: ".next/*"
+        target: "/var/www/ts.aaipi.id/.next"
+        strip_components: 1
+        
+    - name: Running
+      uses: appleboy/ssh-action@master
+      with:
+        host: ${{ secrets.HOST }}
+        USERNAME: ${{ secrets.USERNAME }}
+        PORT: ${{ secrets.PORT }}
+        KEY: ${{ secrets.SSHKEY }}
+        script: |
+         export PATH=$PATH:/root/.nvm/versions/node/v17.9.1/bin
+         pm2 restart ts.aaipi.id
+
+         

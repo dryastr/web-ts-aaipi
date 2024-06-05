@@ -1,0 +1,17 @@
+.illustration-login {
+	display: flex !important;
+	transition: $transition-base, top 0.2s ease;
+	@include media-breakpoint-down(xl) {
+		display: none !important;
+		transition: $transition-base, top 0.2s ease;
+	}
+}
+
+.illustration-login-logo {
+	display: none !important;
+	transition: $transition-base, top 0.2s ease;
+	@include media-breakpoint-down(lg) {
+		display: block !important;
+		transition: $transition-base, top 0.2s ease;
+	}
+}

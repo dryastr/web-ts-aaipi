@@ -1,0 +1,37 @@
+//
+// Avatar
+//
+
+// .avatar {}
+
+.step-item {
+	display: flex;
+	cursor: pointer;
+	z-index: 9;
+	padding: 10px;
+	border-radius: 20px;
+	-webkit-user-select: none; /* Safari */
+	-ms-user-select: none; /* IE 10 and IE 11 */
+	user-select: none; /* Standard syntax */
+	padding-right: 50px !important;
+	&:hover {
+		background: #ddd;
+		border-radius: '50px';
+	}
+}
+
+.step-item-active {
+	background: #ddd;
+	border-radius: '50px';
+}
+
+.step-item-disabled {
+	display: flex;
+	z-index: 9;
+	padding: 10px;
+	border-radius: 20px;
+	-webkit-user-select: none; /* Safari */
+	-ms-user-select: none; /* IE 10 and IE 11 */
+	user-select: none; /* Standard syntax */
+	padding-right: 50px !important;
+}
